@@ -7,6 +7,9 @@ function Square({ id, currPlayer, setCurrPlayer, setGameState, finishedState, se
     const [icon, setIcon] = useState(null);
 
     function updateSquareIcon(){
+        if(finishedState){
+            return;
+        }
         if(!icon ){
             if(currPlayer === 'circle'){
                 setIcon(<FaRegCircle/>);
@@ -32,7 +35,7 @@ function Square({ id, currPlayer, setCurrPlayer, setGameState, finishedState, se
 
     return(
         <>
-            <div onClick={updateSquareIcon}  className="text-white  text-5xl  flex justify-center items-center bg-slate-500 hover:cursor-pointer border-solid border-2 border-white w-[120px] h-[120px] rounded-lg">
+            <div onClick={updateSquareIcon}   className={`text-white text-5xl flex justify-center items-center bg-slate-500 border-solid border-2 border-white w-[120px] h-[120px] rounded-lg ${finishedState ? 'cursor-not-allowed' : 'cursor-pointer'} `}>
                 {icon}
             </div>
         </>
