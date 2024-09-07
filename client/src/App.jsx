@@ -12,11 +12,13 @@ function App() {
 
   const [ currPlayer, setCurrPlayer ] = useState('circle');
   const [ finishedState, setFinishedState ] = useState(false);
+  const [ finishedArrayState, setFinishedArrayState] = useState([]);
 
   const checkWinner = () => {
 
     for(let row = 0; row < gameState.length; row++){
       if(gameState[row][0] === gameState[row][1] && gameState[row][1] === gameState[row][2]){
+        setFinishedArrayState(row * 3 + 0, row * 3 + 1, row * 3 + 2);
         return gameState[row][0];
       }
     }
@@ -36,11 +38,22 @@ function App() {
       return gameState[0][2];
     }
 
+    const isDrawn = gameState.flat().every(e => {
+      if(e === 'circle' || e === 'cross'){
+        return true;
+      }
+    })
+    if(isDrawn){
+      return "draw";
+    }
+
+    return null;
+
   }
 
   useEffect(() => {
     const winner = checkWinner();
-    if(winner == 'circle' || winner == 'cross'){
+    if(winner){
       setFinishedState(winner);
     }
   }, [gameState]);
@@ -60,6 +73,7 @@ function App() {
         {
           gameState.map((ele, rowIndex) =>
             ele.map((el, colIndex) => <Square
+            finishedArrayState = {finishedArrayState}
             finishedState={finishedState}
             setFinishedState={setFinishedState}
             id={rowIndex * 3 + colIndex}
@@ -68,6 +82,20 @@ function App() {
             setCurrPlayer={setCurrPlayer}  
             key={rowIndex * 3 + colIndex}/>
           )
+          )
+        }
+      </div>
+      <div>
+        {
+          finishedState && finishedState !== "draw" &&(
+            <h3 className='text-white font-bold font-mono tracking-widest text-4xl capitalize px-4 py-2 mb-20'> {finishedState} won the game </h3>
+          )
+        }
+        {
+          finishedState && finishedState === "draw" && (
+            <h3 className='text-5xl font-semibold text-white uppercase px-4 py-2 tracking-widest font-mono'>
+              Game Drawn
+            </h3>
           )
         }
       </div>

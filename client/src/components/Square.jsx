@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaRegCircle } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 
-function Square({ id, currPlayer, setCurrPlayer, setGameState, finishedState, setFinishedState }){
+function Square({ id, currPlayer, setCurrPlayer, setGameState, finishedState, setFinishedState, finishedArrayState }){
 
     const [icon, setIcon] = useState(null);
 
