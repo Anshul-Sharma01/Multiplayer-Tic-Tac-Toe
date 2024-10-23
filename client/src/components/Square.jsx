@@ -35,7 +35,7 @@ function Square({ id, currPlayer, setCurrPlayer, setGameState, finishedState, se
 
     return(
         <>
-            <div onClick={updateSquareIcon}   className={`text-white text-5xl flex justify-center items-center bg-slate-500 border-solid border-2 border-white w-[120px] h-[120px] rounded-lg ${finishedState ? 'cursor-not-allowed' : 'cursor-pointer'} `}>
+            <div onClick={updateSquareIcon}   className={`text-white text-5xl flex justify-center items-center bg-slate-500 border-solid border-2 border-white w-[120px] h-[120px] rounded-lg ${finishedState ? 'cursor-not-allowed' : 'cursor-pointer'} ${finishedArrayState.includes(id) ? "bg-red-600" : ""} `}>
                 {icon}
             </div>
         </>
