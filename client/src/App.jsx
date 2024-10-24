@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import Square from './components/Square.jsx'
+import  Swal from "sweetalert2";
 import { io } from "socket.io-client";
 const socket = io("http://localhost:3000", {
   autoConnect : true
 })
+
 
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
   const [ finishedState, setFinishedState ] = useState(false);
   const [ finishedArrayState, setFinishedArrayState] = useState([]);
   const [ playOnline, setPlayOnline ] = useState(false);
+  const [ socket, setSocket ] = useState(null);
+  const [ playerName, setPlayerName ] = useState("");
 
   const checkWinner = () => {
     // Check rows
@@ -59,6 +63,38 @@ function App() {
   };
 
 
+  async function playOnlineClick(){
+
+    const result = await takePlayerName();
+    console.log(result);
+
+
+    if(result.isConfirmed){
+      return;
+    }
+
+    const username = result.value;
+    setPlayerName(username);
+
+    const newSocket = io("http://localhost:3000", {
+      autoConnect : true,
+    });
+
+    newSocket?.emit("request_to_play",{
+      playerName : username,
+      
+    });
+
+    setSocket(newSocket);
+  }
+
+  
+
+  socket?.on("connection", function() {
+    setPlayOnline(true);
+  })
+
+  
   
   useEffect(() => {
     const winner = checkWinner();
@@ -67,9 +103,30 @@ function App() {
     }
   }, [gameState]);
 
+  useEffect(() => {
+    if(socket?.connected){
+      setPlayOnline(true);
+    }
+  }, [socket])
+
+  const takePlayerName = async () => {
+    const result = await Swal.fire({
+      title : "Enter your name",
+      input : "text",
+      showCancelButton : true,
+      inputValidator : (value) => {
+        if(!value){
+          return "You need to provide your name!";
+        }
+      }
+    })
+    return result;
+  }
+
+
   if(!playOnline){
     return <div className='flex flex-col justify-center items-center h-[100vh]'>
-      <button className='bg-yellow-400 font-extrabold px-6 py-4 rounded-lg font-mono tracking-widest text-4xl uppercase hover:bg-yellow-500'>Play Online</button>
+      <button onClick={playOnlineClick} className='bg-yellow-400 font-extrabold px-6 py-4 rounded-lg font-mono tracking-widest text-4xl uppercase hover:bg-yellow-500'>Play Online</button>
     </div>
   }
 
